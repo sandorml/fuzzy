@@ -9,10 +9,9 @@ def replace(items: list, values: list):
 
 
 class Rule:
-    def __init__(self, op: list, result: str):
+    def __init__(self, op: list):
         self.op = op
-        self.result = result
-
+        
     def evaluate(self, values: list):
         result_list = []
         neg = False
