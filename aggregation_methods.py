@@ -77,13 +77,13 @@ class AggregationMethods:
     @staticmethod
     def  largest_of_maximum(x: list, y: list):
         y.reverse()
-        return self.smallest_of_maximum(x,y)
+        return AggregationMethods.smallest_of_maximum(x,y)
     
 
 
-class Mamdani(AggregationMeth):
+class Mamdani(AggregationMethods):
     def __init__(self, rules: list, implications: list, membership_function: dict, x: tuple):
-        AggregationMeth.__init__(self, implications, membership_function, x)
+        AggregationMethods.__init__(self, implications, membership_function, x)
         self.rules = [Rule(item.split(), max, min) for item in rules]
 
     def evaluate(self, values: dict):
