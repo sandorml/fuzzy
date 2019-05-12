@@ -1,47 +1,54 @@
 from copy import deepcopy
 
+# TODO: arreglar esto, pq los valores no son booleanos, los valores van a ser numeros
 
-def replace(items: list, values: list):
+
+def replace(items: list, values: dict):
     result = ' '.join(items)
-    for v in values:
-        result = result.replace(v, 'True')
-    return [item if item == '&' or item == '|' or item == '~' else bool(item) if item == 'True' else bool() for item in result.split()]
+    for k, v in values.items():
+        result = result.replace(k, str(v))
+    return [item if item == '&' or item == '|' or item == '~' else float(item) for item in result.split()]
+
+# TODO: ver como tratarla negacion
 
 
 class Rule:
-    def __init__(self, op: list):
-        self.op = op
+    def __init__(self, rule: list, op_or, op_and):
+        self.rule = rule
+        self.op_or = op_or
+        self.op_and = op_and
 
-    def evaluate(self, values: list):
-        result_list = []
-        neg = False
-        for target_list in replace(self.op, values):
-            if target_list == '~':
-                neg = True
-            elif target_list == '&' or target_list == '|':
-                result_list.append(target_list)
-            else:
-                if neg:
-                    result_list.append(not target_list)
-                else:
-                    result_list.append(target_list)
-                neg = False
+    def evaluate(self, values: dict):
+        result_list = replace(self.rule, values)
+        
+        # neg = False
+        # for target_list in replace(self.rule, values):
+        #     if target_list == '~':
+        #         neg = True
+        #     elif target_list == '&' or target_list == '|':
+        #         result_list.append(target_list)
+        #     else:
+        #         if neg:
+        #             result_list.append(not target_list)
+        #             neg = False
+        #         else:
+        #             result_list.append(target_list)
 
-        result = True
+        result = result_list[0]
         if result_list[1] == '&':
-            op = bool.__and__
+            op = self.op_and
         else:
-            op = bool.__or__
+            op = self.op_or
         for i in range(2, len(result_list)-2, 2):
             result = op(result, result_list[i])
             if result_list[i+1] == '&':
-                op = bool.__and__
+                op = self.op_and
             else:
-                op = bool.__or__
+                op = self.op_or
 
         result = op(result, result_list[len(result_list)-1])
 
         return result
 
     def __str__(self):
-        return ' '.join(self.op)
+        return ' '.join(self.rule)
