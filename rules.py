@@ -11,18 +11,21 @@ def replace(items: list, values: list):
 class Rule:
     def __init__(self, op: list):
         self.op = op
-        
+
     def evaluate(self, values: list):
         result_list = []
         neg = False
         for target_list in replace(self.op, values):
             if target_list == '~':
                 neg = True
+            elif target_list == '&' or target_list == '|':
+                result_list.append(target_list)
             else:
                 if neg:
                     result_list.append(not target_list)
                 else:
                     result_list.append(target_list)
+                neg = False
 
         result = True
         if result_list[1] == '&':
