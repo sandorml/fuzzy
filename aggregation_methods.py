@@ -2,6 +2,18 @@ from rules import Rule
 import numpy as np
 
 
+def middle_index(i: int, l: list, old_l=float('-inf'), old_r=float('inf')):
+    rigth = sum([l[idx] for idx in range(i, len(l))])
+    left = sum(l) - rigth
+    if rigth == left or abs(old_l-old_r) < abs(left-rigth) or i+1 >= len(l) or i-1 < 0:
+        if abs(old_l-old_r) < abs(left-rigth):
+            return i, old_l, old_r
+        return i, left, rigth
+    elif rigth > left:
+        return middle_index(i+1, l, left, rigth)
+    return middle_index(i-1, l, left, rigth)
+
+
 class AggregationMethods:
     def __init__(self, implications: list, membership_function: dict, domain: tuple):
         self.membership_function = membership_function
@@ -54,7 +66,8 @@ class AggregationMethods:
 
     @staticmethod
     def biseccion(x: list, y: list):
-        pass
+        result, _, _ = middle_index(int(len(y)/2), y)
+        return x[result]
 
     @staticmethod
     def middle_of_maximum(x: list, y: list):
@@ -80,7 +93,8 @@ class Mamdani(AggregationMethods):
     def __init__(self, rules: list, implications: list, membership_function: dict, domain: tuple):
         AggregationMethods.__init__(
             self, implications, membership_function, domain)
-        self.rules = [Rule(item.split(), max, min) for item in rules]
+        self.rules = [Rule(item.split(), max, min, lambda x: 1-x)
+                      for item in rules]
 
     def evaluate(self, values: dict):
         result = [item.evaluate({k: self.membership_function[k](
