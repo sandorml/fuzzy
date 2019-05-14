@@ -12,19 +12,16 @@ class AggregationMethods:
         values_x = []
         values_y = []
         for i in range(len(results)):
-
             implication = self.implication[i]
             for x in np.arange(self.domain[0], self.domain[1], 0.01):
                 y = self.membership_function[implication](x)
                 vy = y if results[i] >= y and y >= 0 else results[i]
-
                 if not x in values_x:
                     values_x.append(x)
                     values_y.append(vy)
                 else:
                     i_x = values_x.index(x)
                     values_y[i_x] = values_y[i_x] if values_y[i_x] > vy else vy
-           
         return values_x, values_y
 
     def defuzzification(self, x: list, y: list, type='c'):
@@ -65,7 +62,7 @@ class AggregationMethods:
         values = []
         for i in range(len(y)):
             if y[i] == max_l:
-                values.append(i)
+                values.append(x[i])
         return np.average(values)
 
     @staticmethod
@@ -81,7 +78,8 @@ class AggregationMethods:
 
 class Mamdani(AggregationMethods):
     def __init__(self, rules: list, implications: list, membership_function: dict, domain: tuple):
-        AggregationMethods.__init__(self, implications, membership_function, domain)
+        AggregationMethods.__init__(
+            self, implications, membership_function, domain)
         self.rules = [Rule(item.split(), max, min) for item in rules]
 
     def evaluate(self, values: dict):
