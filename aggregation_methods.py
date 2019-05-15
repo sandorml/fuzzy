@@ -15,26 +15,14 @@ def middle_index(i: int, l: list, old_l=float('-inf'), old_r=float('inf')):
 
 
 class AggregationMethods:
-    def __init__(self, implications: list, membership_function: dict, domain: tuple):
-        self.membership_function = membership_function
-        self.implication = implications
-        self.domain = domain
+    def __init__(self, consequent):
+        # def __init__(self, implications: list, membership_function: dict, consequent):
+        # self.membership_function = membership_function
+        # self.implication = implications
+        self.consequent = consequent
 
     def implications(self, results: list):
-        values_x = []
-        values_y = []
-        for i in range(len(results)):
-            implication = self.implication[i]
-            for x in np.arange(self.domain[0], self.domain[1], 0.01):
-                y = self.membership_function[implication](x)
-                vy = y if results[i] >= y and y >= 0 else results[i]
-                if not x in values_x:
-                    values_x.append(x)
-                    values_y.append(vy)
-                else:
-                    i_x = values_x.index(x)
-                    values_y[i_x] = values_y[i_x] if values_y[i_x] > vy else vy
-        return values_x, values_y
+        return self.consequent(self, results)
 
     def defuzzification(self, x: list, y: list, type='c'):
         '''
@@ -91,12 +79,62 @@ class AggregationMethods:
 
 class Mamdani(AggregationMethods):
     def __init__(self, rules: list, implications: list, membership_function: dict, domain: tuple):
-        AggregationMethods.__init__(
-            self, implications, membership_function, domain)
+        self.implication = implications
+        self.membership_function = membership_function
+        self.domain = domain
+
+        AggregationMethods.__init__(self, Mamdani.consequent_filter)
         self.rules = [Rule(item.split(), max, min, lambda x: 1-x)
                       for item in rules]
 
     def evaluate(self, values: dict):
-        result = [item.evaluate({k: self.membership_function[k](
-            v) for k, v in values.items()}) for item in self.rules]
+        result = []
+
+        for item in self.rules:
+            val = item.evaluate({k: self.membership_function[k](
+            v) for k, v in values.items()})
+            result.append(val)
+        # result = [item.evaluate({k: self.membership_function[k](
+        #     v) for k, v in values.items()}) for item in self.rules]
         return result
+
+    @staticmethod
+    def consequent_filter(self, results):
+        values_x = []
+        values_y = []
+        for i in range(len(results)):
+            implication = self.implication[i]
+            for x in np.arange(self.domain[0], self.domain[1], 0.01):
+                y = self.membership_function[implication](x)
+                vy = y if results[i] >= y and y >= 0 else results[i]
+                if not x in values_x:
+                    values_x.append(x)
+                    values_y.append(vy)
+                else:
+                    i_x = values_x.index(x)
+                    values_y[i_x] = values_y[i_x] if values_y[i_x] > vy else vy
+        return values_x, values_y
+
+
+class Larsen(Mamdani):
+    def __init__(self, rules: list, implications: list, membership_function: dict, domain: tuple):
+        Mamdani.__init__(self, rules, implications,
+                         membership_function, domain)
+        AggregationMethods.__init__(self, Larsen.consequent_filter)
+
+    @staticmethod
+    def consequent_filter(self, results):
+        values_x = []
+        values_y = []
+        for i in range(len(results)):
+            implication = self.implication[i]
+            for x in np.arange(self.domain[0], self.domain[1], 0.01):
+                y = self.membership_function[implication](x)
+                vy = y*results[i]
+                if not x in values_x:
+                    values_x.append(x)
+                    values_y.append(vy)
+                else:
+                    i_x = values_x.index(x)
+                    values_y[i_x] = values_y[i_x] if values_y[i_x] > vy else vy
+        return values_x, values_y
