@@ -28,9 +28,7 @@ def guaguas():
 
         'NoColor & NoEsNumero & EstaCerca',
         'NoColor & NoEsNumero & EstaLejos',
-        'NoColor & NoEsNumero & EstaMedio',
-
-        
+        'NoColor & NoEsNumero & EstaMedio'        
     ]
 
 
@@ -61,34 +59,34 @@ def guaguas():
     ]
 
     memb = {
-        'EsColor': pi(0, 1, 2, 3),
-        'NoColor': pi(4, 5, 6, 7),
-        'ConozcoNumero': pi(0, 1, 4, 5),
+        'NoColor': pi(0, 1, 2, 3),
+        'EsColor': pi(4, 5, 6, 7),
+        'NoEsNumero': pi(0, 1, 4, 5),
         'NoSeguroDeNumero': pi(4, 5, 6, 7),
-        'NoEsNumero': pi(6, 7, 9, 10),
+        'ConozcoNumero': pi(6, 7, 9, 10),
         'EstaCerca': pi(0, 1, 4, 5),
         'EstaMedio': pi(2, 3, 4, 5),
-        'EstaLejos': pi(4, 5, 6, 7),
+        'EstaLejos': pi(4.5, 5, 6.5, 8),
         'Caliente': triangular(1, 2, 3),
         'Normal': triangular(2.5, 3.5, 4),
         'Frio': triangular(3.8, 5, 6),
-        'Rapido': pi(0, 3, 5, 6),
-        'Medio': pi(0, 6, 8, 9),
-        'Lento': triangular(8.5, 9, 10)
+        'Rapido': pi(6.5, 8, 9, 10),
+        'Medio': pi(4.5, 5, 6, 7.5),
+        'Lento': triangular(0, 5, 3)
     }
 
     m = Mamdani(rules, implications, memb, (0, 10))
     val = m.evaluate({
-        'EsColor': 5,
-        'NoColor': 5,
+        'EsColor': 6,
+        'NoColor': 6,
 
-        'ConozcoNumero': 4,
-        'NoSeguroDeNumero': 4,
-        'NoEsNumero': 4,
+        'ConozcoNumero': 9,
+        'NoSeguroDeNumero': 9,
+        'NoEsNumero': 9,
 
-        'EstaCerca': 3,
-        'EstaLejos': 3,
-        'EstaMedio': 3,
+        'EstaCerca': 6,
+        'EstaLejos': 6,
+        'EstaMedio': 6,
 
         'Caliente': 3,
         'Normal': 3,
@@ -103,6 +101,10 @@ def guaguas():
 
     pl.show()
 
+# velocidad promedio
+# 5km/h caminando
+# 6km/h trotando
+# 10km/h corriendo
 
 if __name__ == "__main__":
     guaguas()
