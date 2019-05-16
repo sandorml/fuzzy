@@ -63,15 +63,15 @@ def guaguas(color=5, numero=8, distancia=4, agregation_meth='m', membership_func
         'NoEsNumero': pi(0, 1, 4, 5),
         'NoSeguroDeNumero': pi(4, 5, 6, 7),
         'ConozcoNumero': pi(6, 7, 9, 10),
-        'EstaCerca': pi(0, 1, 4, 5),
-        'EstaMedio': pi(2, 4, 5, 6),
-        'EstaLejos': pi(4.5, 5, 6.5, 10),
+        'EstaCerca': pi(0, 1, 2.5, 3),
+        'EstaMedio': pi(2.8, 3.5, 5, 6),
+        'EstaLejos': pi(5.5, 6, 9, 10),
         'Caliente': triangular(1, 2, 3),
         'Normal': triangular(2.5, 3.5, 4),
         'Frio': triangular(3.8, 5, 6),
-        'Rapido': pi(6.5, 8, 9, 10),
-        'Medio': pi(4.5, 5, 6, 7.5),
-        'Lento': pi(0, 2, 3, 5)
+        'Rapido': pi(7, 8, 9, 10),
+        'Medio': pi(4.5, 6, 6.5, 7.5),
+        'Lento': pi(1, 2.5, 3, 5)
     }
 
     m = Mamdani(rules, implications, memb, (0, 10)) if agregation_meth == 'm' else Larsen(
@@ -115,4 +115,4 @@ if __name__ == "__main__":
             membership_func= sys.argv[5]
         )
     else:
-        guaguas()
+        print('Introduce los parámetros')
