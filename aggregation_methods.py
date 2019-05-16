@@ -1,7 +1,6 @@
 from rules import Rule
 import numpy as np
 
-
 def middle_index(i: int, l: list, old_l=float('-inf'), old_r=float('inf')):
     rigth = sum([l[idx] for idx in range(i, len(l))])
     left = sum(l) - rigth
@@ -16,12 +15,10 @@ def middle_index(i: int, l: list, old_l=float('-inf'), old_r=float('inf')):
 
 class AggregationMethods:
     def __init__(self, consequent):
-        # def __init__(self, implications: list, membership_function: dict, consequent):
-        # self.membership_function = membership_function
-        # self.implication = implications
         self.consequent = consequent
 
     def implications(self, results: list):
+        print(results)
         return self.consequent(self, results)
 
     def defuzzification(self, x: list, y: list, type='c'):
@@ -89,13 +86,10 @@ class Mamdani(AggregationMethods):
 
     def evaluate(self, values: dict):
         result = []
-
         for item in self.rules:
             val = item.evaluate({k: self.membership_function[k](
             v) for k, v in values.items()})
             result.append(val)
-        # result = [item.evaluate({k: self.membership_function[k](
-        #     v) for k, v in values.items()}) for item in self.rules]
         return result
 
     @staticmethod
@@ -104,15 +98,19 @@ class Mamdani(AggregationMethods):
         values_y = []
         for i in range(len(results)):
             implication = self.implication[i]
+           
             for x in np.arange(self.domain[0], self.domain[1], 0.01):
                 y = self.membership_function[implication](x)
+               
                 vy = y if results[i] >= y and y >= 0 else results[i]
+                
                 if not x in values_x:
                     values_x.append(x)
                     values_y.append(vy)
                 else:
                     i_x = values_x.index(x)
                     values_y[i_x] = values_y[i_x] if values_y[i_x] > vy else vy
+        
         return values_x, values_y
 
 
