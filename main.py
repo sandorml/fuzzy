@@ -4,12 +4,12 @@ import matplotlib.pyplot as pl
 import sys
 
 
-def guaguas():
+def guaguas(color=5, numero=8, distancia=4, agregation_meth='m', membership_func='c'):
     rules = [
         'EsColor & ConozcoNumero & EstaCerca',
         'EsColor & ConozcoNumero & EstaLejos',
         'EsColor & ConozcoNumero & EstaMedio',
-        
+
         'EsColor & NoSeguroDeNumero & EstaCerca',
         'EsColor & NoSeguroDeNumero & EstaLejos',
         'EsColor & NoSeguroDeNumero & EstaMedio',
@@ -21,16 +21,15 @@ def guaguas():
         'NoColor & ConozcoNumero & EstaCerca',
         'NoColor & ConozcoNumero & EstaLejos',
         'NoColor & ConozcoNumero & EstaMedio',
-        
+
         'NoColor & NoSeguroDeNumero & EstaCerca',
         'NoColor & NoSeguroDeNumero & EstaLejos',
         'NoColor & NoSeguroDeNumero & EstaMedio',
 
         'NoColor & NoEsNumero & EstaCerca',
         'NoColor & NoEsNumero & EstaLejos',
-        'NoColor & NoEsNumero & EstaMedio'        
+        'NoColor & NoEsNumero & EstaMedio'
     ]
-
 
     implications = [
         'Lento',
@@ -48,7 +47,7 @@ def guaguas():
         'Lento',
         'Rapido',
         'Medio',
-        
+
         'Medio',
         'Medio',
         'Medio',
@@ -59,43 +58,41 @@ def guaguas():
     ]
 
     memb = {
-        'NoColor': pi(0, 1, 2, 3),
-        'EsColor': pi(4, 5, 6, 7),
+        'NoColor': pi(0, 2, 4, 6),
+        'EsColor': pi(3, 5, 7, 10),
         'NoEsNumero': pi(0, 1, 4, 5),
         'NoSeguroDeNumero': pi(4, 5, 6, 7),
         'ConozcoNumero': pi(6, 7, 9, 10),
         'EstaCerca': pi(0, 1, 4, 5),
-        'EstaMedio': pi(2, 3, 4, 5),
-        'EstaLejos': pi(4.5, 5, 6.5, 8),
+        'EstaMedio': pi(2, 4, 5, 6),
+        'EstaLejos': pi(4.5, 5, 6.5, 10),
         'Caliente': triangular(1, 2, 3),
         'Normal': triangular(2.5, 3.5, 4),
         'Frio': triangular(3.8, 5, 6),
         'Rapido': pi(6.5, 8, 9, 10),
         'Medio': pi(4.5, 5, 6, 7.5),
-        'Lento': triangular(0, 5, 3)
+        'Lento': pi(0, 2, 3, 5)
     }
 
-    m = Mamdani(rules, implications, memb, (0, 10))
+    m = Mamdani(rules, implications, memb, (0, 10)) if agregation_meth == 'm' else Larsen(
+        rules, implications, memb, (0, 10))
     val = m.evaluate({
-        'EsColor': 6,
-        'NoColor': 6,
+        'EsColor': color,
+        'NoColor': color,
 
-        'ConozcoNumero': 9,
-        'NoSeguroDeNumero': 9,
-        'NoEsNumero': 9,
+        'ConozcoNumero': numero,
+        'NoSeguroDeNumero': numero,
+        'NoEsNumero': numero,
 
-        'EstaCerca': 6,
-        'EstaLejos': 6,
-        'EstaMedio': 6,
-
-        'Caliente': 3,
-        'Normal': 3,
-        'Frio': 3
+        'EstaCerca': distancia,
+        'EstaLejos': distancia,
+        'EstaMedio': distancia
 
     })
     x, y = m.implications(val)
 
-    print(m.defuzzification(x, y, 'b'))
+    print(membership_func)
+    print(m.defuzzification(x, y, membership_func))
 
     pl.plot(x, y)
 
@@ -106,6 +103,16 @@ def guaguas():
 # 6km/h trotando
 # 10km/h corriendo
 
-if __name__ == "__main__":
-    guaguas()
 
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        print(sys.argv)
+        guaguas(
+            color=int(sys.argv[1]),
+            numero=int(sys.argv[2]),
+            distancia=int(sys.argv[3]),
+            agregation_meth=sys.argv[4],
+            membership_func= sys.argv[5]
+        )
+    else:
+        guaguas()
