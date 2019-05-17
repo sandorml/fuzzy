@@ -4,7 +4,7 @@ import numpy as np
 def middle_index(i: int, l: list, old_l=float('-inf'), old_r=float('inf')):
     rigth = sum([l[idx] for idx in range(i, len(l))])
     left = sum(l) - rigth
-    if rigth == left or abs(old_l-old_r) < abs(left-rigth) or i+1 >= len(l) or i-1 < 0:
+    if rigth == left or abs(old_l-old_r) <= abs(left-rigth) or i+1 >= len(l) or i-1 < 0:
         if abs(old_l-old_r) < abs(left-rigth):
             return i, old_l, old_r
         return i, left, rigth
